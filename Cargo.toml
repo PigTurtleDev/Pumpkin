@@ -10,7 +10,8 @@ members = [
     "crates/pumpkin-macros",
     "crates/pumpkin-nbt",
     "crates/pumpkin-plugin-api",
-    "crates/pumpkin-protocol",
+    "crates/pumpkin-protocol", 
+    "crates/pumpkin-registry",
     "crates/pumpkin-util",
     "crates/pumpkin-world",
 ]

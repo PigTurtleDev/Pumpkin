@@ -3418,6 +3418,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "pumpkin-registry"
+version = "0.1.0-dev+26.2-26.40"
+dependencies = [
+ "pumpkin-util",
+ "rustc-hash",
+]
+
+[[package]]
 name = "pumpkin-util"
 version = "0.1.0-dev+26.2-26.40"
 dependencies = [
