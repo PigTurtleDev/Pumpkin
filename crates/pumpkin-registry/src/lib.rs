@@ -102,6 +102,6 @@ mod tests {
         ROOT_REGISTRY
             .set(root)
             .ok()
-            .expect("Someone thought it would be funny to preemptively init the registry")
+            .expect("Someone thought it would be funny to preemptively init the registry");
     }
 }

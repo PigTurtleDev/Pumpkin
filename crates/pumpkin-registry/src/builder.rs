@@ -30,7 +30,7 @@ impl<T: Send + Sync + 'static> RegistryBuilder<T> {
         plugin_holder: &PluginHolder,
     ) -> StaticRegistry<T> {
         let statics = static_entries.len();
-        assert!(statics == identifiers.len());
+        assert_eq!(statics, identifiers.len());
 
         let mapping: FxHashMap<_, _> = identifiers
             .iter()
@@ -56,7 +56,7 @@ impl<T: Send + Sync + 'static> RegistryBuilder<T> {
         identifiers: Vec<Identifier>,
         plugin_holder: &PluginHolder,
     ) -> ReloadableRegistry<T> {
-        assert!(internal_entries.len() == identifiers.len());
+        assert_eq!(internal_entries.len(), identifiers.len());
         let mapping: FxHashMap<_, _> = identifiers
             .into_iter()
             .enumerate()
