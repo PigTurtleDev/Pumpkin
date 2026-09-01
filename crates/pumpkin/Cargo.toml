@@ -132,7 +132,9 @@ indexmap.workspace = true
 tempfile.workspace = true
 
 [features]
+default = ["wasm-plugins"]
 console-subscriber = ["dep:console-subscriber"]
+wasm-plugins = []
 
 [lints]
 workspace = true

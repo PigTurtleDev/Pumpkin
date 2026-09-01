@@ -64,6 +64,7 @@ pub mod ticker;
 pub use recipe::RecipeManager;
 
 use crate::data::advancement_data::AdvancementManager;
+#[cfg(feature = "wasm-plugins")]
 use crate::server::scheduler::TaskScheduler;
 
 /// Represents a Minecraft server instance.
@@ -142,6 +143,7 @@ pub struct Server {
     pub server_guid: u64,
     /// Player idle timeout in minutes (0 = disabled)
     pub player_idle_timeout: AtomicI32,
+    #[cfg(feature = "wasm-plugins")]
     /// Manages scheduled tasks (e.g. from plugins)
     pub task_scheduler: Arc<TaskScheduler>,
     /// Manages scheduled datapack functions (`/schedule`)
@@ -314,6 +316,7 @@ impl Server {
             debug_profiler: debug_profiler::DebugProfiler::new(),
             tasks: TaskTracker::new(),
             runtime: tokio::runtime::Handle::current(),
+            #[cfg(feature = "wasm-plugins")]
             task_scheduler: Arc::new(TaskScheduler::new()),
             scheduled_functions: Arc::new(crate::server::scheduler::ScheduledFunctionQueue::new()),
             server_guid: rand::random(),
@@ -1096,6 +1099,7 @@ impl Server {
 
     /// Ticks the game logic for all worlds. This is the part that is affected by `/tick freeze`.
     pub fn tick_worlds(self: &Arc<Self>) {
+        #[cfg(feature = "wasm-plugins")]
         self.task_scheduler.tick(self);
         self.scheduled_functions.tick(
             self,

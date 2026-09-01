@@ -1,12 +1,16 @@
+#[cfg(feature = "wasm-plugins")]
 use crate::plugin::loader::wasm::wasm_host::WasmPlugin;
 use crate::server::Server;
 use std::cmp::Ordering;
-use std::collections::{BinaryHeap, HashSet};
-use std::sync::atomic::Ordering as AtomicOrdering;
-use std::sync::{Arc, Mutex, Weak};
+use std::collections::BinaryHeap;
+#[cfg(feature = "wasm-plugins")]
+use std::collections::HashSet;
+#[cfg(feature = "wasm-plugins")]
+use std::sync::{Weak, atomic::Ordering as AtomicOrdering};
+use std::sync::{Arc, Mutex};
 
 pub type TaskId = u32;
-
+#[cfg(feature = "wasm-plugins")]
 pub struct ScheduledTask {
     pub id: TaskId,
     pub plugin: Arc<WasmPlugin>,
@@ -14,41 +18,41 @@ pub struct ScheduledTask {
     pub next_tick: u64,
     pub period: Option<u64>,
 }
-
+#[cfg(feature = "wasm-plugins")]
 impl PartialEq for ScheduledTask {
     fn eq(&self, other: &Self) -> bool {
         self.next_tick == other.next_tick
     }
 }
-
+#[cfg(feature = "wasm-plugins")]
 impl Eq for ScheduledTask {}
-
+#[cfg(feature = "wasm-plugins")]
 impl PartialOrd for ScheduledTask {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
-
+#[cfg(feature = "wasm-plugins")]
 impl Ord for ScheduledTask {
     fn cmp(&self, other: &Self) -> Ordering {
         // Reverse order so BinaryHeap is a min-heap
         other.next_tick.cmp(&self.next_tick)
     }
 }
-
+#[cfg(feature = "wasm-plugins")]
 pub struct TaskScheduler {
     tasks: Mutex<BinaryHeap<ScheduledTask>>,
     cancelled_tasks: Mutex<HashSet<TaskId>>,
     disabled_plugins: Mutex<Vec<Weak<WasmPlugin>>>,
     next_task_id: std::sync::atomic::AtomicU32,
 }
-
+#[cfg(feature = "wasm-plugins")]
 impl Default for TaskScheduler {
     fn default() -> Self {
         Self::new()
     }
 }
-
+#[cfg(feature = "wasm-plugins")]
 impl TaskScheduler {
     #[must_use]
     pub fn new() -> Self {

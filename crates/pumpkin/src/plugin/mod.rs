@@ -27,8 +27,10 @@ pub mod loader;
 /// host features.
 pub mod permissions;
 
-use crate::{LOGGER_IMPL, plugin::loader::wasm::WasmPluginLoader, server::Server};
+use crate::{LOGGER_IMPL, server::Server};
 pub use api::*;
+#[cfg(feature = "wasm-plugins")]
+use loader::wasm::WasmPluginLoader;
 
 pub type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 
@@ -235,11 +237,13 @@ impl Default for PluginManager {
 impl PluginManager {
     /// Create a new plugin manager with default loaders
     #[must_use]
+    #[cfg_attr(not(feature = "wasm-plugins"), allow(unused))]
     pub fn new(verify_plugin_signatures: bool) -> Self {
         Self {
             plugins: SyncRwLock::new(Vec::new()),
             loaders: RwLock::new(vec![
                 Arc::new(NativePluginLoader),
+                #[cfg(feature = "wasm-plugins")]
                 Arc::new(WasmPluginLoader::new(verify_plugin_signatures)),
             ]),
             handlers: Arc::new(ArcSwap::from_pointee(HashMap::new())),
@@ -722,10 +726,12 @@ impl PluginManager {
                                 break;
                             }
 
+                            #[cfg(feature = "wasm-plugins")]
                             let allow_unsigned = plugin_override
                                 .and_then(|o| o.allow_unsigned)
                                 .unwrap_or(server.advanced_config.plugins.allow_unsigned);
 
+                            #[cfg(feature = "wasm-plugins")]
                             if !allow_unsigned
                                 && path
                                     .extension()
@@ -932,10 +938,12 @@ impl PluginManager {
                     )));
                 }
 
+                #[cfg(feature = "wasm-plugins")]
                 let allow_unsigned = plugin_override
                     .and_then(|o| o.allow_unsigned)
                     .unwrap_or(server.advanced_config.plugins.allow_unsigned);
 
+                #[cfg(feature = "wasm-plugins")]
                 if !allow_unsigned
                     && path
                         .extension()
